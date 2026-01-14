@@ -56,8 +56,7 @@ update-rates	        Обновить курсы	        update-rates
 exit	                Выход	                exit
 
 ### API_KEY
- EXCHANGERATE_API_KEY="a420cb9beea6876367c5caab"
+
 
 ### asciinema
 ##  Демонстрация работы проекта 
- https://asciinema.org/a/3txQNHjopMaiE1NHffzOQYu1G
