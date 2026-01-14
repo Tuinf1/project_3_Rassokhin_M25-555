@@ -1,0 +1,30 @@
+{
+  "1": {
+    "user_id": 1,
+    "username": "testuser",
+    "hashed_password": "8dc2f44e1a9f1e1b49cb112dfce72b8d70ab949a90b799e8f13136f100bb57f2",
+    "salt": "f1d67f2529865fabe1e4e4691c6a87e7",
+    "registration_date": "2025-11-15T19:13:21.662204"
+  },
+  "2": {
+    "user_id": 2,
+    "username": "test2user",
+    "hashed_password": "155efa7c94b765e064eaa46b9f6ff517d072b63938a9fd52d6dc8b4bcb4db172",
+    "salt": "ab090084f87be78e2a23467a70e4d370",
+    "registration_date": "2025-11-15T19:33:49.765886"
+  },
+  "3": {
+    "user_id": 3,
+    "username": "user1",
+    "hashed_password": "c8dbfc54608c1cd1fe38ab3eb6bbe5828e622ed7b43dcb9805b38b53254cd83b",
+    "salt": "ca2fecefe9d1c53b35bdfe556bba8b41",
+    "registration_date": "2025-11-15T19:39:43.148178"
+  },
+  "4": {
+    "user_id": 4,
+    "username": "user2",
+    "hashed_password": "23aa0b3b57fd849674a68a12a6cdd7922486f3ff5ad62bab2c02c3e5e4b6c117",
+    "salt": "4c03b63d64cf003901604d83b585aff2",
+    "registration_date": "2025-11-15T19:40:18.029839"
+  }
+}

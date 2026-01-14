@@ -1,0 +1,41 @@
+[tool.poetry]
+name = "finalproject-egorov-m25-555"
+version = "0.1.0"
+description = "Currency trading simulation platform"
+authors = ["Georgij Egorov <your.email@example.com>"]
+readme = "README.md"
+packages = [
+    { include = "valutatrade_hub", from = "." }
+]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+prettytable = "^3.9.0"
+requests = "^2.32.3"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 88
+target-version = "py38"
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.poetry.scripts]
+valutatrade = "main:main"
+[tool.valutatrade]
+data_directory = "data"
+rates_ttl_seconds = 300
+default_base_currency = "USD"
+log_directory = "logs"
+log_level = "INFO"
+log_format = "text"
+max_log_size_mb = 10
+backup_log_files = 5
+supported_currencies = ["USD", "EUR", "RUB", "GBP", "JPY", "CNY", "BTC", "ETH", "LTC", "XRP"]
