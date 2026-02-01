@@ -1,6 +1,8 @@
 import hashlib
 import secrets
 from datetime import datetime
+from typing import Dict
+
 
 class User:
     def init(
@@ -130,3 +132,72 @@ class Wallet:
             "currency_code": self.currency_code,
             "balance": round(self._balance, 2)
         }
+
+
+
+
+
+
+class Portfolio:
+    def init(self, user_id: int):
+        self._user_id = user_id
+        self._wallets: Dict[str, Wallet] = {}
+
+    # =========================
+    # ГЕТТЕРЫ
+    # =========================
+
+    @property
+    def user(self) -> int:
+        return self._user_id
+
+    @property
+    def wallets(self) -> dict:
+        return self._wallets.copy()  # копия для инкапсуляции
+
+    # =========================
+    # ДОБАВЛЕНИЕ КОШЕЛЬКА
+    # =========================
+
+    def add_currency(self, currency_code: str) -> None:
+        if currency_code in self._wallets:
+            raise ValueError(f"Кошелёк для {currency_code} уже существует.")
+        self._wallets[currency_code] = Wallet(currency_code)
+
+    # =========================
+    # ПОЛУЧЕНИЕ КОШЕЛЬКА
+    # =========================
+
+    def get_wallet(self, currency_code: str) -> Wallet:
+        if currency_code not in self._wallets:
+            raise KeyError(f"Кошелёк {currency_code} не найден.")
+        return self._wallets[currency_code]
+
+    # =========================
+    # ОБЩАЯ СТОИМОСТЬ ПОРТФЕЛЯ
+    # =========================
+
+    def get_total_value(self, base_currency: str = "USD") -> float:
+        """
+        Конвертация всех балансов в базовую валюту (например, USD).
+        Пример exchange_rates: {"USD": 1, "BTC": 30000, "EUR": 1.1}
+        """
+        exchange_rates = {
+            "USD": 1.0,
+            "BTC": 30000.0,
+            "EUR": 1.1
+        }
+
+        if base_currency not in exchange_rates:
+            raise ValueError(f"Неизвестная базовая валюта: {base_currency}")
+
+        total = 0.0
+        for code, wallet in self._wallets.items():
+            if code not in exchange_rates:
+                raise ValueError(f"Нет курса для валюты: {code}")
+
+            # Приводим к base_currency
+            rate = exchange_rates[code] / exchange_rates[base_currency]
+            total += wallet.balance * rate
+
+        return round(total, 2)
