@@ -32,3 +32,11 @@ finalproject_<фамилия>_<группа>/
 python -m valutatrade_hub.cli.interface register --username alice --password 1234
 
 python -m valutatrade_hub.cli.interface login --username alice --password 1234
+
+python -m valutatrade_hub.cli.interface show-portfolio --base usd
+
+python -m valutatrade_hub.cli.interface buy --currency BTC --amount 0.05
+
+python -m valutatrade_hub.cli.interface sell --currency BTC --amount 0.01
+
+python -m valutatrade_hub.cli.interface get-rate --from USD --to BTC

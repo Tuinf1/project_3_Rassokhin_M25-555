@@ -1,5 +1,5 @@
 import argparse
-from valutatrade_hub.core.usecases import register_user, login_user, show_portfolio
+from valutatrade_hub.core.usecases import register_user, login_user, show_portfolio, buy_currency, logout_user, sell_currency, get_exchange_rate
 
 
 def run_cli():
@@ -16,6 +16,28 @@ def run_cli():
     login_parser.add_argument("--username", required=True, help="Имя пользователя")
     login_parser.add_argument("--password", required=True, help="Пароль")
 
+    # === LOGOUT ===
+    subparsers.add_parser("logout", help="Выйти из системы")
+
+    # === SHOW-PORTFOLIO ===
+    portfolio_parser = subparsers.add_parser("show-portfolio", help="Показать портфель пользователя")
+    portfolio_parser.add_argument("--base", default="USD", help="Базовая валюта (по умолчанию USD)")
+
+    # === SELL ===
+    sell_parser = subparsers.add_parser("sell", help="Продать валюту")
+    sell_parser.add_argument("--currency", required=True, help="Код валюты (например BTC)")
+    sell_parser.add_argument("--amount", required=True, type=float, help="Сколько продать")
+    # ===
+
+        # === GET-RATE ===
+    rate_parser = subparsers.add_parser("get-rate", help="Получить курс валюты")
+    rate_parser.add_argument("--from", dest="from_currency", required=True, help="Исходная валюта")
+    rate_parser.add_argument("--to", dest="to_currency", required=True, help="Целевая валюта")
+    
+    # === BUY ===
+    buy_parser = subparsers.add_parser("buy", help="Купить валюту")
+    buy_parser.add_argument("--currency", required=True, help="Код валюты (например BTC)")
+    buy_parser.add_argument("--amount", required=True, type=float, help="Сколько купить")
 
     args = parser.parse_args()
 
@@ -34,7 +56,40 @@ def run_cli():
         except ValueError as e:
             print("Ошибка:", e)
 
+    elif args.command == "show-portfolio":
+        try:
+            msg = show_portfolio(args.base)
+            print(msg)
+        except ValueError as e:
+            print("Ошибка:", e)
 
+    elif args.command == "buy":
+        try:
+            msg = buy_currency(args.currency, args.amount)
+            print(msg)
+        except ValueError as e:
+            print("Ошибка:", e)
+
+    elif args.command == "logout":
+        try:
+            msg = logout_user()
+            print(msg)
+        except Exception as e:
+            print("Ошибка:", e)
+
+    elif args.command == "sell":
+        try:
+            msg = sell_currency(args.currency, args.amount)
+            print(msg)
+        except ValueError as e:
+            print("Ошибка:", e)
+
+    elif args.command == "get-rate":
+        try:
+            msg = get_exchange_rate(args.from_currency, args.to_currency)
+            print(msg)
+        except ValueError as e:
+            print("Ошибка:", e)
 
 
 

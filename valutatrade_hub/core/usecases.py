@@ -57,11 +57,14 @@ def register_user(username: str, password: str) -> str:
 
     # 5. Создание пустого портфеля
     portfolios = _load_json(PORTFOLIOS_PATH)
-    portfolios.append({
-        "user_id": user_id,
-        "wallets": {}
-    })
-    _save_json(PORTFOLIOS_PATH, portfolios)
+    existing = any(p["user_id"] == user_id for p in portfolios)
+
+    if not existing:
+        portfolios.append({
+            "user_id": user_id,
+            "wallets": {}
+        })
+        _save_json(PORTFOLIOS_PATH, portfolios)
 
     return f"Пользователь '{username}' зарегистрирован (id={user_id})."
 
@@ -90,6 +93,11 @@ def login_user(username: str, password: str) -> str:
     return f"Вы вошли как '{username}'"
 
 
+def logout_user() -> str:
+    session_path = Path("data/session.json")
+    if session_path.exists():
+        session_path.unlink()  # удалить файл
+    return "Вы вышли из системы."
 
 
 def show_portfolio(base_currency: str = "USD") -> str:
@@ -110,6 +118,11 @@ def show_portfolio(base_currency: str = "USD") -> str:
     # Получаем портфель
     portfolios = _load_json(PORTFOLIOS_PATH)
     portfolio = next((p for p in portfolios if p["user_id"] == user_id), None)
+
+    # Проверка, что base существует
+    if base_currency.upper() not in ["USD", "BTC", "EUR", "ETH", "RUB"]:
+        raise ValueError(f"Неизвестная базовая валюта '{base_currency}'")
+
     if not portfolio or not portfolio.get("wallets"):
         return f"Портфель пользователя '{username}' пуст."
 
@@ -118,10 +131,7 @@ def show_portfolio(base_currency: str = "USD") -> str:
     # Получаем курсы
     rates_data = _load_json(Path("data/rates.json"))
 
-    # Проверка, что base существует
-    if base_currency.upper() not in ["USD", "BTC", "EUR", "ETH", "RUB"]:
-        raise ValueError(f"Неизвестная базовая валюта '{base_currency}'")
-
+    
     total = 0.0
     output = [f"Портфель пользователя '{username}' (база: {base_currency.upper()}):"]
 
@@ -150,3 +160,181 @@ def show_portfolio(base_currency: str = "USD") -> str:
 
     output.append(f"\nИТОГО: {total:.2f} {base_currency.upper()}")
     return "\n".join(output)
+
+
+
+def buy_currency(currency: str, amount: float) -> str:
+    if not isinstance(amount, (int, float)) or amount <= 0:
+        raise ValueError("'amount' должен быть положительным числом.")
+
+    currency = currency.upper()
+
+    # Шаг 1. Проверка логина
+    session = _load_json(Path("data/session.json"))
+    if not session or "user_id" not in session:
+        raise ValueError("Сначала выполните login")
+
+    user_id = session["user_id"]
+
+    # Шаг 2. Получаем username
+    users = _load_json(USERS_PATH)
+    user = next((u for u in users if u["user_id"] == user_id), None)
+    if not user:
+        raise ValueError("Пользователь не найден")
+    username = user["username"]
+
+    # Шаг 3. Загружаем портфель
+    portfolios = _load_json(PORTFOLIOS_PATH)
+    portfolio = next((p for p in portfolios if p["user_id"] == user_id), None)
+    if not portfolio:
+        raise ValueError("Портфель пользователя не найден")
+
+    wallets = portfolio["wallets"]
+
+    # Шаг 4. Если нет кошелька — создаём
+    if currency not in wallets:
+        wallets[currency] = {"currency_code": currency, "balance": 0.0}
+
+    before = wallets[currency]["balance"]
+    wallets[currency]["balance"] += amount
+    after = wallets[currency]["balance"]
+
+    # Шаг 5. Получаем курс для расчёта стоимости покупки
+    rates = _load_json(Path("data/rates.json"))
+    rate_key = f"{currency}_USD"
+    inverse_key = f"USD_{currency}"
+
+    if rate_key in rates:
+        rate = rates[rate_key]["rate"]
+        total_usd = amount * rate
+        rate_info = f"{rate:.2f} USD/{currency}"
+    elif inverse_key in rates:
+        rate = rates[inverse_key]["rate"]
+        total_usd = amount / rate
+        rate_info = f"1/{rate:.4f} USD/{currency}"
+    else:
+        raise ValueError(f"Не удалось получить курс для {currency} → USD")
+
+    # Сохраняем обновлённый портфель
+    _save_json(PORTFOLIOS_PATH, portfolios)
+
+    return (
+        f"Покупка выполнена: {amount:.4f} {currency} по курсу {rate_info}\n"
+        f"Изменения в портфеле:\n"
+        f"- {currency}: было {before:.4f} → стало {after:.4f}\n"
+        f"Оценочная стоимость покупки: {total_usd:.2f} USD"
+    )
+
+def sell_currency(currency: str, amount: float) -> str:
+    if not isinstance(amount, (int, float)) or amount <= 0:
+        raise ValueError("'amount' должен быть положительным числом.")
+
+    currency = currency.upper()
+
+    session = _load_json(Path("data/session.json"))
+    if not session or "user_id" not in session:
+        raise ValueError("Сначала выполните login")
+    user_id = session["user_id"]
+
+    users = _load_json(USERS_PATH)
+    user = next((u for u in users if u["user_id"] == user_id), None)
+    if not user:
+        raise ValueError("Пользователь не найден")
+    username = user["username"]
+
+    portfolios = _load_json(PORTFOLIOS_PATH)
+    portfolio = next((p for p in portfolios if p["user_id"] == user_id), None)
+    if not portfolio:
+        raise ValueError("Портфель пользователя не найден")
+
+    wallets = portfolio["wallets"]
+
+    # Проверка: есть ли валюта
+    if currency not in wallets:
+        raise ValueError(f"У вас нет кошелька '{currency}'.")
+
+    balance = wallets[currency]["balance"]
+    if balance < amount:
+        raise ValueError(
+            f"Недостаточно средств: доступно {balance:.4f} {currency}, требуется {amount:.4f} {currency}"
+        )
+
+    # Получаем курс
+    rates = _load_json(Path("data/rates.json"))
+    rate_key = f"{currency}_USD"
+    inverse_key = f"USD_{currency}"
+
+    if rate_key in rates:
+        rate = rates[rate_key]["rate"]
+        usd_amount = amount * rate
+        rate_info = f"{rate:.2f} USD/{currency}"
+    elif inverse_key in rates:
+        rate = rates[inverse_key]["rate"]
+        usd_amount = amount / rate
+        rate_info = f"1/{rate:.4f} USD/{currency}"
+    else:
+        raise ValueError(f"Не удалось получить курс для {currency} → USD")
+
+    # Списание валюты
+    before = wallets[currency]["balance"]
+    wallets[currency]["balance"] -= amount
+    after = wallets[currency]["balance"]
+
+    # Зачисление в USD
+    if "USD" not in wallets:
+        wallets["USD"] = {"currency_code": "USD", "balance": 0.0}
+    wallets["USD"]["balance"] += usd_amount
+
+    _save_json(PORTFOLIOS_PATH, portfolios)
+
+    return (
+        f"Продажа выполнена: {amount:.4f} {currency} по курсу {rate_info}\n"
+        f"Изменения в портфеле:\n"
+        f"- {currency}: было {before:.4f} → стало {after:.4f}\n"
+        f"Оценочная выручка: {usd_amount:.2f} USD"
+    )
+
+
+from datetime import datetime, timedelta
+
+def get_exchange_rate(from_cur: str, to_cur: str) -> str:
+    from_cur = from_cur.upper()
+    to_cur = to_cur.upper()
+
+    if not from_cur or not to_cur:
+        raise ValueError("Коды валют не должны быть пустыми")
+
+    key = f"{from_cur}_{to_cur}"
+    inverse_key = f"{to_cur}_{from_cur}"
+
+    rates_path = Path("data/rates.json")
+    rates = _load_json(rates_path)
+
+    # Курс прямой
+    if key in rates:
+        rate_info = rates[key]
+        rate = rate_info["rate"]
+        updated_at = datetime.fromisoformat(rate_info["updated_at"])
+        age = datetime.now() - updated_at
+        formatted_time = updated_at.strftime("%Y-%m-%d %H:%M:%S")
+
+        response = f"Курс {key}: {rate:.8f} (обновлено: {formatted_time})"
+
+        # Обратный (если есть)
+        if inverse_key in rates:
+            inv_rate = rates[inverse_key]["rate"]
+            response += f"\nОбратный курс {inverse_key}: {inv_rate:.2f}"
+        return response
+
+    # Попробовать найти обратный
+    if inverse_key in rates:
+        rate_info = rates[inverse_key]
+        rate = 1 / rate_info["rate"]
+        updated_at = datetime.fromisoformat(rate_info["updated_at"])
+        formatted_time = updated_at.strftime("%Y-%m-%d %H:%M:%S")
+
+        response = f"Курс {key}: {rate:.8f} (обратный из {inverse_key}, обновлено: {formatted_time})"
+        response += f"\nОбратный курс {inverse_key}: {rate_info['rate']:.2f}"
+        return response
+
+    raise ValueError(f"Курс {key} недоступен. Повторите попытку позже.")
