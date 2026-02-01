@@ -16,3 +16,7 @@
 2026-02-02 04:35:54,614 INFO 2026-02-01T21:35:54.614177 BUY user='BTC' currency='-' amount=- rate=- base=- result=ERROR error_type=ValueError error_msg='Не удалось получить курс BTC → USD'
 2026-02-02 04:38:04,472 INFO 2026-02-01T21:38:04.471826 BUY user='BTC' currency='-' amount=- rate=- base=- result=ERROR error_type=ValueError error_msg='Не удалось получить курс BTC → USD'
 2026-02-02 04:38:54,219 INFO 2026-02-01T21:38:54.218703 BUY user='BTC' currency='-' amount=- rate=- base=- result=OK
+2026-02-02 04:49:46,984 INFO 2026-02-01T21:49:46.984526 REGISTER user='alice' currency='-' amount=- rate=- base=- result=ERROR error_type=ValueError error_msg='Имя пользователя 'alice' уже занято'
+2026-02-02 04:50:01,175 INFO 2026-02-01T21:50:01.175322 LOGIN user='alice' currency='-' amount=- rate=- base=- result=OK
+2026-02-02 04:50:16,149 INFO 2026-02-01T21:50:16.148754 BUY user='BTC' currency='-' amount=- rate=- base=- result=OK
+2026-02-02 04:50:22,260 INFO 2026-02-01T21:50:22.259518 SELL user='BTC' currency='-' amount=- rate=- base=- result=OK

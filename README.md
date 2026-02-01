@@ -26,6 +26,9 @@ finalproject_<фамилия>_<группа>/
 ├── README.md
 └── .gitignore                 # исключить dist/, pycache/ и т.п.
 
+Запись:
+
+https://asciinema.org/a/TqUXXlOUAMgK5dl9
 
 
 
