@@ -25,3 +25,10 @@ finalproject_<фамилия>_<группа>/
 ├── pyproject.toml
 ├── README.md
 └── .gitignore                 # исключить dist/, pycache/ и т.п.
+
+
+
+
+python -m valutatrade_hub.cli.interface register --username alice --password 1234
+
+python -m valutatrade_hub.cli.interface login --username alice --password 1234
