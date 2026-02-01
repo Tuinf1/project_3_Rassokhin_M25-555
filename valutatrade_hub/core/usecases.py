@@ -3,6 +3,7 @@ import hashlib
 import secrets
 from datetime import datetime
 from pathlib import Path
+from valutatrade_hub.core.settings import SettingsLoader
 
 USERS_PATH = Path("data/users.json")
 PORTFOLIOS_PATH = Path("data/portfolios.json")
@@ -298,6 +299,10 @@ def sell_currency(currency: str, amount: float) -> str:
 from datetime import datetime, timedelta
 
 def get_exchange_rate(from_cur: str, to_cur: str) -> str:
+
+    ttl = SettingsLoader().get("rates_ttl_seconds", 3600)
+    path = SettingsLoader().get("data_path", "data/")
+
     from_cur = from_cur.upper()
     to_cur = to_cur.upper()
 
@@ -338,3 +343,13 @@ def get_exchange_rate(from_cur: str, to_cur: str) -> str:
         return response
 
     raise ValueError(f"Курс {key} недоступен. Повторите попытку позже.")
+
+
+if __name__ == "__main__":
+    from valutatrade_hub.core.settings import SettingsLoader
+
+    settings = SettingsLoader()
+    print("DATA_PATH =", settings.get("data_path"))
+    print("TTL =", settings.get("rates_ttl_seconds"))
+    print("BASE =", settings.get("default_base_currency"))
+    print("LOG =", settings.get("log_path"))

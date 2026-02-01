@@ -1,6 +1,12 @@
 import argparse
 from valutatrade_hub.core.usecases import register_user, login_user, show_portfolio, buy_currency, logout_user, sell_currency, get_exchange_rate
+from valutatrade_hub.core.settings import SettingsLoader
 
+from valutatrade_hub.core.exceptions import (
+    CurrencyNotFoundError,
+    InsufficientFundsError,
+    ApiRequestError
+)
 
 def run_cli():
     parser = argparse.ArgumentParser(description="Crypto CLI")
@@ -41,6 +47,7 @@ def run_cli():
 
     args = parser.parse_args()
 
+
     if args.command == "register":
         try:
             msg = register_user(args.username, args.password)
@@ -60,6 +67,9 @@ def run_cli():
         try:
             msg = show_portfolio(args.base)
             print(msg)
+        except CurrencyNotFoundError as e:
+            print(f"❌ {e}")
+            print("Поддерживаемые валюты: USD, EUR, RUB, BTC, ETH")
         except ValueError as e:
             print("Ошибка:", e)
 
@@ -67,6 +77,14 @@ def run_cli():
         try:
             msg = buy_currency(args.currency, args.amount)
             print(msg)
+        except CurrencyNotFoundError as e:
+            print(f"❌ {e}")
+            print("Поддерживаемые валюты: USD, EUR, RUB, BTC, ETH")
+        except InsufficientFundsError as e:
+            print(f"❌ {e}")
+        except ApiRequestError as e:
+            print(f"⚠️ {e}")
+            print("Попробуйте повторить позже или проверьте подключение к сети.")
         except ValueError as e:
             print("Ошибка:", e)
 
@@ -81,6 +99,11 @@ def run_cli():
         try:
             msg = sell_currency(args.currency, args.amount)
             print(msg)
+        except CurrencyNotFoundError as e:
+            print(f"❌ {e}")
+            print("Поддерживаемые валюты: USD, EUR, RUB, BTC, ETH")
+        except InsufficientFundsError as e:
+            print(f"❌ {e}")
         except ValueError as e:
             print("Ошибка:", e)
 
@@ -88,6 +111,12 @@ def run_cli():
         try:
             msg = get_exchange_rate(args.from_currency, args.to_currency)
             print(msg)
+        except CurrencyNotFoundError as e:
+            print(f"❌ {e}")
+            print("Поддерживаемые валюты: USD, EUR, RUB, BTC, ETH")
+        except ApiRequestError as e:
+            print(f"⚠️ {e}")
+            print("Попробуйте повторить позже или проверьте подключение к сети.")
         except ValueError as e:
             print("Ошибка:", e)
 

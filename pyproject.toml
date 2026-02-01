@@ -1,23 +1,21 @@
 [tool.poetry]
-name = "project-3-rassokhin-m25-555"
-version = "0.1.1"
-description = ""
+name = "valutatrade-hub"
+version = "0.2.1"
+description = "Crypto portfolio CLI with currency exchange"
 authors = ["Rassokhin Vladislav <rassokhinvladislav@mail.ru>"]
 readme = "README.md"
 
 packages = [
-     { include = "src" },
- ]
+    { include = "valutatrade_hub" }
+]
 
 [tool.poetry.scripts]
-database = "src.primitive_db.main:main"
-
+valutatrade = "valutatrade_hub.cli.interface:run_cli"
 
 [tool.poetry.dependencies]
 python = "^3.12"
-prompt = "^0.4.1"
 prettytable = "^3.17.0"
-
+tomli = "^2.0.1"  # для чтения pyproject.toml в Python <3.11
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.14.13"
@@ -34,3 +32,12 @@ exclude = ["venv", ".venv", "dist", "pycache"]
 [tool.ruff.lint]
 select = ["E", "F", "I"]
 ignore = []
+
+# ================================
+# 🎯 Настройки valutatrade_hub
+# ================================
+[tool.valutatrade]
+data_path = "data/"
+rates_ttl_seconds = 3600
+default_base_currency = "USD"
+log_path = "logs/app.log"
