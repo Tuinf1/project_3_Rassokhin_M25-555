@@ -4,6 +4,7 @@ import secrets
 from datetime import datetime
 from pathlib import Path
 from valutatrade_hub.core.settings import SettingsLoader
+from valutatrade_hub.decorators import log_action
 
 USERS_PATH = Path("data/users.json")
 PORTFOLIOS_PATH = Path("data/portfolios.json")
@@ -23,7 +24,7 @@ def _save_json(path, data):
     with path.open("w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
 
-
+@log_action("REGISTER")
 def register_user(username: str, password: str) -> str:
     # 1. Проверка username
     if not username.strip():
@@ -71,7 +72,7 @@ def register_user(username: str, password: str) -> str:
 
 
 # login
-
+@log_action("LOGIN")
 def login_user(username: str, password: str) -> str:
     users = _load_json(USERS_PATH)
 
@@ -163,7 +164,7 @@ def show_portfolio(base_currency: str = "USD") -> str:
     return "\n".join(output)
 
 
-
+@log_action("BUY")
 def buy_currency(currency: str, amount: float) -> str:
     if not isinstance(amount, (int, float)) or amount <= 0:
         raise ValueError("'amount' должен быть положительным числом.")
@@ -226,6 +227,7 @@ def buy_currency(currency: str, amount: float) -> str:
         f"Оценочная стоимость покупки: {total_usd:.2f} USD"
     )
 
+@log_action("SELL")
 def sell_currency(currency: str, amount: float) -> str:
     if not isinstance(amount, (int, float)) or amount <= 0:
         raise ValueError("'amount' должен быть положительным числом.")
@@ -344,12 +346,12 @@ def get_exchange_rate(from_cur: str, to_cur: str) -> str:
 
     raise ValueError(f"Курс {key} недоступен. Повторите попытку позже.")
 
+# test 3.3S
+# if __name__ == "__main__":
+#     from valutatrade_hub.core.settings import SettingsLoader
 
-if __name__ == "__main__":
-    from valutatrade_hub.core.settings import SettingsLoader
-
-    settings = SettingsLoader()
-    print("DATA_PATH =", settings.get("data_path"))
-    print("TTL =", settings.get("rates_ttl_seconds"))
-    print("BASE =", settings.get("default_base_currency"))
-    print("LOG =", settings.get("log_path"))
+#     settings = SettingsLoader()
+#     print("DATA_PATH =", settings.get("data_path"))
+#     print("TTL =", settings.get("rates_ttl_seconds"))
+#     print("BASE =", settings.get("default_base_currency"))
+#     print("LOG =", settings.get("log_path"))

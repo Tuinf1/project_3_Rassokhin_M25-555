@@ -1,0 +1,4 @@
+2026-02-02 03:33:03,862 INFO Тест: логирование включено
+2026-02-02 03:35:14,483 INFO Тест: логирование включено
+2026-02-02 03:35:14,491 INFO 2026-02-01T20:35:14.490614 SELL user='BTC' currency='-' amount=- rate=- base=- result=OK
+2026-02-02 03:35:31,299 INFO 2026-02-01T20:35:31.298694 SELL user='BTC' currency='-' amount=- rate=- base=- result=OK

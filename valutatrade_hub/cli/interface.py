@@ -1,6 +1,7 @@
 import argparse
 from valutatrade_hub.core.usecases import register_user, login_user, show_portfolio, buy_currency, logout_user, sell_currency, get_exchange_rate
-from valutatrade_hub.core.settings import SettingsLoader
+
+from valutatrade_hub import logging_config
 
 from valutatrade_hub.core.exceptions import (
     CurrencyNotFoundError,
