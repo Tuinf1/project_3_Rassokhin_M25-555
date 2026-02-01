@@ -1,28 +1,18 @@
+
 install:
 	poetry install
 
 project:
-	poetry run python main.py
+	poetry run database
 
 build:
 	poetry build
 
 publish:
-	poetry publish --dry-run
+	poetry publish
 
 package-install:
-	python3 -m pip install --user dist/*.whl
+	python3 -m pip install dist/*.whl
 
-lint:
+make lint:
 	poetry run ruff check .
-
-format:
-	poetry run ruff format .
-
-test:
-	poetry run python -m pytest
-
-clean:
-	rm -rf dist/ build/ *.egg-info/ __pycache__/ */__pycache__/ */*/__pycache__/
-
-reinstall: clean build package-install
