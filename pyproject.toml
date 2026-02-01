@@ -16,6 +16,7 @@ valutatrade = "valutatrade_hub.cli.interface:run_cli"
 python = "^3.12"
 prettytable = "^3.17.0"
 tomli = "^2.0.1"  # для чтения pyproject.toml в Python <3.11
+requests = "^2.32.5"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.14.13"
