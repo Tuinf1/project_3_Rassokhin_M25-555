@@ -136,8 +136,6 @@ class Wallet:
 
 
 
-
-
 class Portfolio:
     def init(self, user_id: int):
         self._user_id = user_id
@@ -153,7 +151,7 @@ class Portfolio:
 
     @property
     def wallets(self) -> dict:
-        return self._wallets.copy()  # копия для инкапсуляции
+        return self._wallets.copy()  # копия для инкапсуляцииS
 
     # =========================
     # ДОБАВЛЕНИЕ КОШЕЛЬКА
