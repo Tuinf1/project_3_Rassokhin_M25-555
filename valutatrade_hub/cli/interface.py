@@ -14,6 +14,7 @@ from valutatrade_hub.core.usecases import (
     register_user,
     sell_currency,
     show_portfolio,
+    show_rates
 )
 
 from valutatrade_hub.parser_service.config import ParserConfig
@@ -107,6 +108,13 @@ def run_cli():
         except ValueError as e:
             print("Ошибка:", e)
 
+    elif args.command == "show-rates":
+        print(show_rates(
+            currency=args.currency,
+            top=args.top,
+            base=args.base,
+        ))
+
     elif args.command == "login":
         try:
             msg = login_user(args.username, args.password)
@@ -168,15 +176,12 @@ def run_cli():
 
     elif args.command == "get-rate":
         try:
-            result = get_rate(args.from_code, args.to_code)
-            print(f"Курс {args.from_code} → {args.to_code}: {result['rate']:.4f}")
-            print(f"Обновлено: {result['updated_at']}")
+            result = get_rate(args.from_currency, args.to_currency)
+            print(result)
         except CurrencyNotFoundError as e:
-            print(f"[ОШИБКА: Валюта] {e}")
+            print(f"❌ {e}")
         except ApiRequestError as e:
-            print(f"[ОШИБКА: Курс недоступен] {e}")
-        except Exception as e:
-            print(f"[СИСТЕМНАЯ ОШИБКА] {e}")
+            print(f"⚠️ {e}")
 
     elif args.command == "update-rates":
         run_update_rates(args)

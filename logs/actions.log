@@ -28,3 +28,20 @@
 2026-02-03 06:07:02,868 INFO CoinGeckoClient: OK (3 rates)
 2026-02-03 06:07:03,283 INFO ExchangeRateApiClient: OK (0 rates)
 2026-02-03 06:07:03,284 INFO Update completed, 3 pairs updated.
+2026-02-03 06:24:56,844 INFO 2026-02-02T23:24:56.844033 SELL user='BTC' currency='-' amount=- rate=- base=- result=ERROR                     error_type=ValueError error_msg='Не удалось получить курс BTC → USD'
+2026-02-03 06:25:47,420 INFO 2026-02-02T23:25:47.420240 SELL user='BTC' currency='-' amount=- rate=- base=- result=ERROR                     error_type=ValueError error_msg='Не удалось получить курс BTC → USD'
+2026-02-03 06:26:16,215 INFO 2026-02-02T23:26:16.215316 SELL user='BTC' currency='-' amount=- rate=- base=- result=ERROR                     error_type=ValueError error_msg='Не удалось получить курс BTC → USD'
+2026-02-03 06:26:56,417 INFO Starting rates update...
+2026-02-03 06:26:56,821 INFO CoinGeckoClient: OK (3 rates)
+2026-02-03 06:26:57,277 INFO ExchangeRateApiClient: OK (0 rates)
+2026-02-03 06:26:57,280 INFO Update completed, 3 pairs updated.
+2026-02-03 06:29:04,734 INFO Starting rates update...
+2026-02-03 06:29:05,227 INFO CoinGeckoClient: OK (3 rates)
+2026-02-03 06:29:05,662 INFO ExchangeRateApiClient: OK (0 rates)
+2026-02-03 06:29:05,664 INFO Update completed, 3 pairs updated.
+2026-02-03 06:29:07,411 INFO 2026-02-02T23:29:07.411647 SELL user='BTC' currency='-' amount=- rate=- base=- result=ERROR                     error_type=ValueError error_msg='Не удалось получить курс BTC → USD'
+2026-02-03 06:30:41,062 INFO 2026-02-02T23:30:41.062365 SELL user='BTC' currency='-' amount=- rate=- base=- result=ERROR                     error_type=ValueError error_msg='Не удалось получить курс BTC → USD'
+2026-02-03 06:31:54,878 INFO 2026-02-02T23:31:54.878468 SELL user='BTC' currency='-' amount=- rate=- base=- result=ERROR                     error_type=ValueError error_msg='Не удалось получить курс BTC → USD'
+2026-02-03 06:37:09,449 INFO 2026-02-02T23:37:09.448961 SELL user='BTC' currency='-' amount=- rate=- base=- result=ERROR                     error_type=NameError error_msg='name 'rates' is not defined'
+2026-02-03 06:37:13,755 INFO 2026-02-02T23:37:13.755317 SELL user='BTC' currency='-' amount=- rate=- base=- result=ERROR                     error_type=NameError error_msg='name 'rates' is not defined'
+2026-02-03 06:38:56,045 INFO 2026-02-02T23:38:56.044358 SELL user='BTC' currency='-' amount=- rate=- base=- result=OK

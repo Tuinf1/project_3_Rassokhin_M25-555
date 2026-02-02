@@ -267,24 +267,7 @@ def buy_currency(currency: str, amount: float) -> str:
     after = wallets[currency_code]["balance"]
 
     # Шаг 5. Загружаем курс для расчёта стоимости в USD
-    # rates = _load_json(Path("data/rates.json"))
-    # rate_key = f"{currency_code}_USD"
-    # inverse_key = f"USD_{currency_code}"
-
-    # if rate_key in rates:
-    #     rate = rates[rate_key]["rate"]
-    #     total_usd = amount * rate
-    #     rate_info = f"{rate:.2f} USD/{currency_code}"
-    # elif inverse_key in rates:
-    #     rate = rates[inverse_key]["rate"]
-    #     total_usd = amount / rate
-    #     rate_info = f"1/{rate:.4f} USD/{currency_code}"
-    # else:
-    #     raise ValueError(f"Не удалось получить курс {currency_code} → USD")
-
-    data = _load_json(Path("data/rates.json"), default={})
-    rates = data.get("pairs", {})
-
+    rates = _load_json(Path("data/rates.json"))
     rate_key = f"{currency_code}_USD"
     inverse_key = f"USD_{currency_code}"
 
@@ -292,12 +275,10 @@ def buy_currency(currency: str, amount: float) -> str:
         rate = rates[rate_key]["rate"]
         total_usd = amount * rate
         rate_info = f"{rate:.2f} USD/{currency_code}"
-
     elif inverse_key in rates:
         rate = rates[inverse_key]["rate"]
         total_usd = amount / rate
         rate_info = f"1/{rate:.4f} USD/{currency_code}"
-
     else:
         raise ValueError(f"Не удалось получить курс {currency_code} → USD")
 
@@ -351,23 +332,8 @@ def sell_currency(currency: str, amount: float) -> str:
             f"Недостаточно средств: доступно {balance:.4f} {currency_code}, требуется {amount:.4f} {currency_code}"
         )
 
-    # Получаем курс для расчёта выручки в USDS
-    # rates = _load_json(Path("data/rates.json"))
-    # rate_key = f"{currency_code}_USD"
-    # inverse_key = f"USD_{currency_code}"
-
-    # if rate_key in rates:
-    #     rate = rates[rate_key]["rate"]
-    #     usd_amount = amount * rate
-    #     rate_info = f"{rate:.2f} USD/{currency_code}"
-    # elif inverse_key in rates:
-    #     rate = rates[inverse_key]["rate"]
-    #     usd_amount = amount / rate
-    #     rate_info = f"1/{rate:.4f} USD/{currency_code}"
-    # else:
-    #     raise ValueError(f"Не удалось получить курс {currency_code} → USD")
-    data = _load_json(Path("data/rates.json"), default={})
-    rates = data.get("pairs", {})
+    # Получаем курс для расчёта выручки в USD
+    rates = _load_json(Path("data/rates.json"))
     rate_key = f"{currency_code}_USD"
     inverse_key = f"USD_{currency_code}"
 
@@ -375,17 +341,12 @@ def sell_currency(currency: str, amount: float) -> str:
         rate = rates[rate_key]["rate"]
         usd_amount = amount * rate
         rate_info = f"{rate:.2f} USD/{currency_code}"
-
     elif inverse_key in rates:
         rate = rates[inverse_key]["rate"]
         usd_amount = amount / rate
         rate_info = f"1/{rate:.4f} USD/{currency_code}"
-
     else:
         raise ValueError(f"Не удалось получить курс {currency_code} → USD")
-
-
-
 
     # Списание валюты
     before = wallets[currency_code]["balance"]
