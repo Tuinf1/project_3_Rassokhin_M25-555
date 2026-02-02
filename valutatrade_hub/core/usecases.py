@@ -8,7 +8,7 @@ from pathlib import Path
 from valutatrade_hub.core.currencies import get_currency
 from valutatrade_hub.core.exceptions import ApiRequestError, CurrencyNotFoundError
 from valutatrade_hub.core.external_api import fetch_rates
-from valutatrade_hub.core.settings import SettingsLoader
+from valutatrade_hub.infra.settings import SettingsLoader
 from valutatrade_hub.decorators import log_action
 
 RATES_PATH = Path("data/rates.json")
