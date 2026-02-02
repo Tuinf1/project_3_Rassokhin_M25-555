@@ -1,5 +1,6 @@
-from valutatrade_hub.core.usecases import get_rate
 import pprint
+
+from valutatrade_hub.core.usecases import get_rate
 
 try:
     result = get_rate("USD", "EUR")

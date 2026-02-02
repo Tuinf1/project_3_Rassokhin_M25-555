@@ -1,8 +1,11 @@
+# ruff: noqa: E501
 from __future__ import annotations
+
 import json
 from pathlib import Path
 from threading import Lock
 from typing import Any
+
 from .settings import settings
 
 

@@ -8,13 +8,12 @@ from valutatrade_hub.core.exceptions import (
 )
 from valutatrade_hub.core.usecases import (
     buy_currency,
-    get_exchange_rate,
+    get_rate,
     login_user,
     logout_user,
     register_user,
     sell_currency,
     show_portfolio,
-    get_rate
 )
 
 

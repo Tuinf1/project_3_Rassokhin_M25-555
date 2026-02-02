@@ -7,8 +7,8 @@ from pathlib import Path
 
 from valutatrade_hub.core.currencies import get_currency
 from valutatrade_hub.core.exceptions import ApiRequestError, CurrencyNotFoundError
-from valutatrade_hub.infra.settings import SettingsLoader
 from valutatrade_hub.decorators import log_action
+from valutatrade_hub.infra.settings import SettingsLoader
 
 RATES_PATH = Path("data/rates.json")
 USERS_PATH = Path("data/users.json")
@@ -18,8 +18,8 @@ PORTFOLIOS_PATH = Path("data/portfolios.json")
 def get_rate(from_code: str, to_code: str) -> dict:
     # 1. Валидация валют
     try:
-        from_currency = get_currency(from_code)
-        to_currency = get_currency(to_code)
+        get_currency(from_code)
+        get_currency(to_code)
     except ValueError:
         raise CurrencyNotFoundError(f"Валюта '{from_code}' или '{to_code}' не найдена")
 
