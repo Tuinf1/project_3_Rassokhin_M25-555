@@ -20,3 +20,11 @@
 2026-02-02 04:50:01,175 INFO 2026-02-01T21:50:01.175322 LOGIN user='alice' currency='-' amount=- rate=- base=- result=OK
 2026-02-02 04:50:16,149 INFO 2026-02-01T21:50:16.148754 BUY user='BTC' currency='-' amount=- rate=- base=- result=OK
 2026-02-02 04:50:22,260 INFO 2026-02-01T21:50:22.259518 SELL user='BTC' currency='-' amount=- rate=- base=- result=OK
+2026-02-03 06:04:41,658 INFO Starting rates update...
+2026-02-03 06:04:42,177 INFO CoinGeckoClient: OK (3 rates)
+2026-02-03 06:04:42,624 INFO ExchangeRateApiClient: OK (0 rates)
+2026-02-03 06:04:42,626 INFO Update completed, 3 pairs updated.
+2026-02-03 06:07:02,456 INFO Starting rates update...
+2026-02-03 06:07:02,868 INFO CoinGeckoClient: OK (3 rates)
+2026-02-03 06:07:03,283 INFO ExchangeRateApiClient: OK (0 rates)
+2026-02-03 06:07:03,284 INFO Update completed, 3 pairs updated.

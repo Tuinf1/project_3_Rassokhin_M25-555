@@ -45,6 +45,9 @@ python -m valutatrade_hub.cli.interface sell --currency BTC --amount 0.01
 python -m valutatrade_hub.cli.interface get-rate --from USD --to BTC
 
 
+test api udates-rates:
+python -m valutatrade_hub.cli.interface update-rates
+
 
 📋 Список CLI-команд valutatrade_hub
 Команда  Описание

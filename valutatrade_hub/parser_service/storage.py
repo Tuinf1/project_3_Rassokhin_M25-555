@@ -4,7 +4,7 @@ from tempfile import NamedTemporaryFile
 
 
 class Storage:
-    def init(self, config):
+    def __init__(self, config):
         self.config = config
 
     def load_rates(self) -> dict:
@@ -74,3 +74,25 @@ class Storage:
         json.dump(history, tmp, indent=2, ensure_ascii=False)
         tmp.close()
         os.replace(tmp.name, self.config.HISTORY_FILE_PATH)
+
+# test
+# if __name__ == "__main__":
+#     from config import ParserConfig
+#     config = ParserConfig()
+#     storage = Storage(config)
+    
+#     print("📂 rates.json:")
+#     print(storage.load_rates())
+
+#     storage.append_history([
+#         {
+#             "id": "TEST_USD_2026-02-03T12:00:00Z",
+#             "from_currency": "TEST",
+#             "to_currency": "USD",
+#             "rate": 1.23,
+#             "timestamp": "2026-02-03T12:00:00Z",
+#             "source": "Test",
+#             "meta": {}
+#         }
+#     ])
+#     print("📈 История обновлена")

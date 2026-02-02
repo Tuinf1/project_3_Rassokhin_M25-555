@@ -16,6 +16,38 @@ from valutatrade_hub.core.usecases import (
     show_portfolio,
 )
 
+from valutatrade_hub.parser_service.config import ParserConfig
+from valutatrade_hub.core.exceptions import ApiRequestError
+from valutatrade_hub.parser_service.storage import Storage
+from valutatrade_hub.parser_service.api_clients import CoinGeckoClient, ExchangeRateApiClient
+from valutatrade_hub.parser_service.updater import RatesUpdater
+
+
+def run_update_rates(args):
+    config = ParserConfig()
+    storage = Storage(config)
+
+    all_clients = {
+        "coingecko": CoinGeckoClient(config),
+        "exchangerate": ExchangeRateApiClient(config),
+    }
+
+    if args.source:
+        clients = [all_clients[args.source]]
+    else:
+        clients = list(all_clients.values())
+
+    updater = RatesUpdater(clients, storage)
+
+    try:
+        result = updater.run_update()
+        if result:
+            print(f"✅ Update successful. Total rates updated: {len(result['pairs'])}. Last refresh: {result['last_refresh']}")
+        else:
+            print("⚠️ Update failed: no rates fetched.")
+    except ApiRequestError as e:
+        print(f"❌ Обновление не выполнено: {e}")
+
 
 def run_cli():
     parser = argparse.ArgumentParser(description="Crypto CLI")
@@ -53,6 +85,15 @@ def run_cli():
     buy_parser = subparsers.add_parser("buy", help="Купить валюту")
     buy_parser.add_argument("--currency", required=True, help="Код валюты (например BTC)")
     buy_parser.add_argument("--amount", required=True, type=float, help="Сколько купить")
+
+    update_parser = subparsers.add_parser("update-rates", help="Обновить курсы валют")
+    update_parser.add_argument(
+        "--source",
+        type=str,
+        choices=["coingecko", "exchangerate"],
+        help="Источник: coingecko или exchangerate. По умолчанию — оба.",
+    )
+
 
     args = parser.parse_args()
 
@@ -137,7 +178,8 @@ def run_cli():
         except Exception as e:
             print(f"[СИСТЕМНАЯ ОШИБКА] {e}")
 
-
+    elif args.command == "update-rates":
+        run_update_rates(args)
 
 if __name__ == "__main__":
     run_cli()
