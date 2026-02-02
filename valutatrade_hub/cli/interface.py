@@ -87,17 +87,21 @@ def run_cli():
     elif args.command == "buy":
         try:
             msg = buy_currency(args.currency, args.amount)
+            print("✅ Покупка успешно выполнена!")
             print(msg)
         except CurrencyNotFoundError as e:
-            print(f"❌ {e}")
-            print("Поддерживаемые валюты: USD, EUR, RUB, BTC, ETH")
+            print(f"❌ Ошибка: {e}")
+            print("ℹ️ Поддерживаемые валюты: USD, EUR, RUB, BTC, ETH")
         except InsufficientFundsError as e:
-            print(f"❌ {e}")
+            print(f"❌ Недостаточно средств: {e}")
+            print("ℹ️ Пополните баланс или уменьшите сумму.")
         except ApiRequestError as e:
-            print(f"⚠️ {e}")
-            print("Попробуйте повторить позже или проверьте подключение к сети.")
+            print(f"⚠️ Ошибка обновления курса: {e}")
+            print("ℹ️ Попробуйте повторить позже или проверьте подключение к сети.")
         except ValueError as e:
-            print("Ошибка:", e)
+            print(f"❌ Некорректные данные: {e}")
+        except Exception as e:
+            print(f"💥 Непредвиденная ошибка: {e}")
 
     elif args.command == "logout":
         try:
