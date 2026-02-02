@@ -1,6 +1,6 @@
+from api_clients import CoinGeckoClient, ExchangeRateApiClient
 from config import ParserConfig
 from storage import Storage
-from api_clients import CoinGeckoClient, ExchangeRateApiClient
 from updater import RatesUpdater
 
 config = ParserConfig()

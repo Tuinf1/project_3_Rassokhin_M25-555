@@ -45,3 +45,5 @@
 2026-02-03 06:37:09,449 INFO 2026-02-02T23:37:09.448961 SELL user='BTC' currency='-' amount=- rate=- base=- result=ERROR                     error_type=NameError error_msg='name 'rates' is not defined'
 2026-02-03 06:37:13,755 INFO 2026-02-02T23:37:13.755317 SELL user='BTC' currency='-' amount=- rate=- base=- result=ERROR                     error_type=NameError error_msg='name 'rates' is not defined'
 2026-02-03 06:38:56,045 INFO 2026-02-02T23:38:56.044358 SELL user='BTC' currency='-' amount=- rate=- base=- result=OK
+2026-02-03 06:39:31,856 INFO 2026-02-02T23:39:31.855639 SELL user='BTC' currency='-' amount=- rate=- base=- result=OK
+2026-02-03 06:39:38,925 INFO 2026-02-02T23:39:38.925075 SELL user='BTC' currency='-' amount=- rate=- base=- result=OK

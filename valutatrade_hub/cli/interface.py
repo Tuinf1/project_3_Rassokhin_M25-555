@@ -14,13 +14,14 @@ from valutatrade_hub.core.usecases import (
     register_user,
     sell_currency,
     show_portfolio,
-    show_rates
+    show_rates,
 )
-
+from valutatrade_hub.parser_service.api_clients import (
+    CoinGeckoClient,
+    ExchangeRateApiClient,
+)
 from valutatrade_hub.parser_service.config import ParserConfig
-from valutatrade_hub.core.exceptions import ApiRequestError
 from valutatrade_hub.parser_service.storage import Storage
-from valutatrade_hub.parser_service.api_clients import CoinGeckoClient, ExchangeRateApiClient
 from valutatrade_hub.parser_service.updater import RatesUpdater
 
 

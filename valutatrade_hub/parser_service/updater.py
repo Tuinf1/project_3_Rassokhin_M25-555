@@ -1,6 +1,8 @@
+# ruff: noqa: E501
 from datetime import datetime
-from valutatrade_hub.logging_config import logger
+
 from valutatrade_hub.core.exceptions import ApiRequestError
+from valutatrade_hub.logging_config import logger
 
 
 class RatesUpdater:
