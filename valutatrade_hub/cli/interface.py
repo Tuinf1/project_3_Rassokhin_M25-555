@@ -14,6 +14,7 @@ from valutatrade_hub.core.usecases import (
     register_user,
     sell_currency,
     show_portfolio,
+    get_rate
 )
 
 
@@ -108,27 +109,30 @@ def run_cli():
     elif args.command == "sell":
         try:
             msg = sell_currency(args.currency, args.amount)
+            print("✅ Продажа успешно выполнена!")
             print(msg)
         except CurrencyNotFoundError as e:
-            print(f"❌ {e}")
-            print("Поддерживаемые валюты: USD, EUR, RUB, BTC, ETH")
+            print(f"❌ Ошибка: {e}")
+            print("ℹ️ Доступные валюты: USD, EUR, RUB, BTC, ETH")
         except InsufficientFundsError as e:
-            print(f"❌ {e}")
+            print(f"❌ Недостаточно средств: {e}")
+            print("ℹ️ Проверьте баланс с помощью команды show-portfolio.")
         except ValueError as e:
-            print("Ошибка:", e)
+            print(f"❌ Некорректные данные: {e}")
+        except Exception as e:
+            print(f"💥 Непредвиденная ошибка: {e}")
 
     elif args.command == "get-rate":
         try:
-            msg = get_exchange_rate(args.from_currency, args.to_currency)
-            print(msg)
+            result = get_rate(args.from_code, args.to_code)
+            print(f"Курс {args.from_code} → {args.to_code}: {result['rate']:.4f}")
+            print(f"Обновлено: {result['updated_at']}")
         except CurrencyNotFoundError as e:
-            print(f"❌ {e}")
-            print("Поддерживаемые валюты: USD, EUR, RUB, BTC, ETH")
+            print(f"[ОШИБКА: Валюта] {e}")
         except ApiRequestError as e:
-            print(f"⚠️ {e}")
-            print("Попробуйте повторить позже или проверьте подключение к сети.")
-        except ValueError as e:
-            print("Ошибка:", e)
+            print(f"[ОШИБКА: Курс недоступен] {e}")
+        except Exception as e:
+            print(f"[СИСТЕМНАЯ ОШИБКА] {e}")
 
 
 
