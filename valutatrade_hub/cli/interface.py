@@ -96,6 +96,29 @@ def run_cli():
         help="Источник: coingecko или exchangerate. По умолчанию — оба.",
     )
 
+    show_rates_parser = subparsers.add_parser(
+    "show-rates",
+    help="Показать курсы валют из локального кеша",
+)
+
+    show_rates_parser.add_argument(
+        "--currency",
+        type=str,
+        help="Показать курс только для указанной валюты (например BTC)",
+    )
+
+    show_rates_parser.add_argument(
+        "--top",
+        type=int,
+        help="Показать N самых дорогих валют",
+    )
+
+    show_rates_parser.add_argument(
+        "--base",
+        type=str,
+        help="Показать курсы относительно базовой валюты (например USD)",
+    )
+
 
     args = parser.parse_args()
 
