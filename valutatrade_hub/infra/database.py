@@ -59,6 +59,18 @@ class DatabaseManager:
     def save_rates(self, rates: dict):
         self._write_json(self.rates_file, rates)
 
+    def update_json(self, path: Path, default: Any, modify_fn: callable):
+        with self._lock:
+            try:
+                text = path.read_text(encoding='utf-8')
+                data = json.loads(text) if text.strip() else default
+            except Exception:
+                data = default
+
+            modify_fn(data)  #
+
+            path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding='utf-8')
+
     def fetch_and_update_rates(self) -> dict:
         rates = self.load_rates()
 
