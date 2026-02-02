@@ -1,5 +1,7 @@
+# ruff: noqa: E501, RUF001
 from abc import ABC, abstractmethod
 from typing import Dict
+
 from ..core.exceptions import CurrencyNotFoundError
 
 

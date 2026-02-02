@@ -1,13 +1,21 @@
+# ruff: noqa: E501
 import argparse
-from valutatrade_hub.core.usecases import register_user, login_user, show_portfolio, buy_currency, logout_user, sell_currency, get_exchange_rate
-
-from valutatrade_hub import logging_config
 
 from valutatrade_hub.core.exceptions import (
+    ApiRequestError,
     CurrencyNotFoundError,
     InsufficientFundsError,
-    ApiRequestError
 )
+from valutatrade_hub.core.usecases import (
+    buy_currency,
+    get_exchange_rate,
+    login_user,
+    logout_user,
+    register_user,
+    sell_currency,
+    show_portfolio,
+)
+
 
 def run_cli():
     parser = argparse.ArgumentParser(description="Crypto CLI")
@@ -53,7 +61,8 @@ def run_cli():
         try:
             msg = register_user(args.username, args.password)
             print(msg)
-            print(f"Войдите: login --username {args.username} --password {args.password}")
+            print(f"Войдите: login --username {args.username} --password\
+                   {args.password}")
         except ValueError as e:
             print("Ошибка:", e)
 

@@ -1,6 +1,7 @@
-import requests
 from datetime import datetime
 from pathlib import Path
+
+import requests
 
 from valutatrade_hub.core.utils import _save_json
 

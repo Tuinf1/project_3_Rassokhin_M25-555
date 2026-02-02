@@ -1,8 +1,10 @@
 # valutatrade_hub/core/settings.py
 
-import tomli
 from pathlib import Path
 from typing import Any
+
+import tomli
+
 
 class SettingsLoader:
     _instance = None

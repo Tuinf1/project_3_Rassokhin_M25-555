@@ -1,5 +1,5 @@
 # valutatrade_hub/core/exceptions.py
-
+# ruff: noqa: E501, RUF001
 class CurrencyNotFoundError(Exception):
     def init(self, code: str):
         super().init(f"Неизвестная валюта '{code}'")

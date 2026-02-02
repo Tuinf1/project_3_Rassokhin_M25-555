@@ -1,18 +1,15 @@
-import json
+# ruff: noqa: E501, RUF001
 import hashlib
+import json
 import secrets
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
+
+from valutatrade_hub.core.currencies import get_currency
+from valutatrade_hub.core.exceptions import ApiRequestError, CurrencyNotFoundError
+from valutatrade_hub.core.external_api import fetch_rates
 from valutatrade_hub.core.settings import SettingsLoader
 from valutatrade_hub.decorators import log_action
-from valutatrade_hub.core.currencies import get_currency
-
-
-from datetime import datetime, timedelta
-from valutatrade_hub.core.currencies import get_currency
-from valutatrade_hub.core.exceptions import CurrencyNotFoundError, ApiRequestError
-from valutatrade_hub.core.settings import SettingsLoader
-from valutatrade_hub.core.external_api import fetch_rates
 
 RATES_PATH = Path("data/rates.json")
 USERS_PATH = Path("data/users.json")
@@ -258,7 +255,7 @@ def buy_currency(currency: str, amount: float) -> str:
     user = next((u for u in users if u["user_id"] == user_id), None)
     if not user:
         raise ValueError("Пользователь не найден")
-    username = user["username"]
+    # username = user["username"]
 
     # Шаг 3. Загружаем портфель
     portfolios = _load_json(PORTFOLIOS_PATH)
@@ -325,7 +322,7 @@ def sell_currency(currency: str, amount: float) -> str:
     user = next((u for u in users if u["user_id"] == user_id), None)
     if not user:
         raise ValueError("Пользователь не найден")
-    username = user["username"]
+    # username = user["username"]
 
     # Загрузка портфеля
     portfolios = _load_json(PORTFOLIOS_PATH)
@@ -450,12 +447,13 @@ def sell_currency(currency: str, amount: float) -> str:
 #     )
 
 
-from datetime import datetime, timedelta
 
 def get_exchange_rate(from_cur: str, to_cur: str) -> str:
 
     ttl = SettingsLoader().get("rates_ttl_seconds", 3600)
-    path = SettingsLoader().get("data_path", "data/")
+    # path = SettingsLoader().get("data_path", "data/")
+
+    
 
     from_cur = from_cur.upper()
     to_cur = to_cur.upper()
@@ -473,8 +471,12 @@ def get_exchange_rate(from_cur: str, to_cur: str) -> str:
     if key in rates:
         rate_info = rates[key]
         rate = rate_info["rate"]
+
         updated_at = datetime.fromisoformat(rate_info["updated_at"])
-        age = datetime.now() - updated_at
+        if datetime.now() - updated_at > timedelta(seconds=ttl):
+            raise ValueError("Курс устарел, обновите данные")
+
+        # age = datetime.now() - updated_at
         formatted_time = updated_at.strftime("%Y-%m-%d %H:%M:%S")
 
         response = f"Курс {key}: {rate:.8f} (обновлено: {formatted_time})"
