@@ -7,7 +7,6 @@ from pathlib import Path
 
 from valutatrade_hub.core.currencies import get_currency
 from valutatrade_hub.core.exceptions import ApiRequestError, CurrencyNotFoundError
-from valutatrade_hub.core.external_api import fetch_rates
 from valutatrade_hub.infra.settings import SettingsLoader
 from valutatrade_hub.decorators import log_action
 
@@ -17,78 +16,64 @@ PORTFOLIOS_PATH = Path("data/portfolios.json")
 
 
 def get_rate(from_code: str, to_code: str) -> dict:
-    # Валидация кодов валют
+    # 1. Валидация валют
     try:
         from_currency = get_currency(from_code)
         to_currency = get_currency(to_code)
     except ValueError:
         raise CurrencyNotFoundError(f"Валюта '{from_code}' или '{to_code}' не найдена")
 
-    # Получаем TTL из настроек
-    settings = SettingsLoader.load()
-    ttl_seconds = settings.get("rates_ttl", 3600)  # по умолчанию 1 час
-
-    # Чтение кэша
-    rates = _load_json(RATES_PATH)
-
-    rate_key = f"{from_currency.code}_{to_currency.code}"
-    inverse_key = f"{to_currency.code}_{from_currency.code}"
-
+    # 2. Настройки TTL
+    settings = SettingsLoader()
+    ttl_seconds = settings.get("rates_ttl", 3600)
     now = datetime.utcnow()
 
-    # Проверка актуальности по ключу
-    def is_fresh(rate_data: dict) -> bool:
-        updated_at = datetime.fromisoformat(rate_data["updated_at"])
-        return now - updated_at <= timedelta(seconds=ttl_seconds)
+    # 3. Загрузка кэша
+    rates = _load_json(RATES_PATH, default={})
 
-    if rate_key in rates and is_fresh(rates[rate_key]):
+    def is_fresh(updated_at_str: str) -> bool:
+        try:
+            updated_at = datetime.fromisoformat(updated_at_str)
+            return now - updated_at <= timedelta(seconds=ttl_seconds)
+        except Exception:
+            return False
+
+    # 4. Прямая пара
+    rate_data = rates.get(f"{from_code}_{to_code}")
+    if rate_data and is_fresh(rate_data.get("updated_at", "")):
         return {
-            "rate": rates[rate_key]["rate"],
-            "updated_at": rates[rate_key]["updated_at"],
+            "rate": rate_data["rate"],
+            "updated_at": rate_data["updated_at"]
         }
 
-    if inverse_key in rates and is_fresh(rates[inverse_key]):
-        rate = 1 / rates[inverse_key]["rate"]
+    # 5. Обратная пара
+    inverse_data = rates.get(f"{to_code}_{from_code}")
+    if inverse_data and is_fresh(inverse_data.get("updated_at", "")):
         return {
-            "rate": rate,
-            "updated_at": rates[inverse_key]["updated_at"],
+            "rate": 1 / inverse_data["rate"],
+            "updated_at": inverse_data["updated_at"]
         }
 
-    # Если нет или устарело — обновляем
+    # 6. Фолбэк — нет данных
+    raise ApiRequestError(f"Нет актуального курса между {from_code} и {to_code}")
+
+
+
+# def _load_json(path):
+#     if not path.exists() or path.stat().st_size == 0:
+#         return []
+#     try:
+#         with path.open("r", encoding="utf-8") as f:
+#             return json.load(f)
+#     except json.JSONDecodeError:
+#         return []
+
+def _load_json(path: Path, default=None):
     try:
-        new_rates = fetch_rates()  # функция загружает и сохраняет rates.json
-        rates.update(new_rates)
-        _save_json(RATES_PATH, rates)
-    except Exception as e:
-        raise ApiRequestError(f"Не удалось обновить курсы: {e}")
-
-    # Повторяем проверку
-    if rate_key in rates:
-        return {
-            "rate": rates[rate_key]["rate"],
-            "updated_at": rates[rate_key]["updated_at"],
-        }
-
-    if inverse_key in rates:
-        rate = 1 / rates[inverse_key]["rate"]
-        return {
-            "rate": rate,
-            "updated_at": rates[inverse_key]["updated_at"],
-        }
-
-    raise ValueError(f"Нет данных курса между {from_code} и {to_code}")
-
-
-
-
-def _load_json(path):
-    if not path.exists() or path.stat().st_size == 0:
-        return []
-    try:
-        with path.open("r", encoding="utf-8") as f:
-            return json.load(f)
-    except json.JSONDecodeError:
-        return []
+        text = path.read_text(encoding='utf-8')
+        return json.loads(text) if text.strip() else default
+    except Exception:
+        return default
 
 
 def _save_json(path, data):
