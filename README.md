@@ -42,13 +42,17 @@ python -m valutatrade_hub.cli.interface update-rates
 
 
 
+📌 CLI-команды valutatrade_hub
 
-📌 Список CLI-команд valutatrade_hub
+Запуск всех команд:
+
+python -m valutatrade_hub.cli.interface <command> [options]
+
 🔐 register — регистрация нового пользователя
 
 Создаёт нового пользователя и инициализирует пустой портфель.
 
-Аргументы:
+Аргументы (обязательные):
 
 --username <str> — имя пользователя
 
@@ -56,13 +60,15 @@ python -m valutatrade_hub.cli.interface update-rates
 
 Пример:
 
-register --username alice --password 1234
+python -m valutatrade_hub.cli.interface register \
+  --username alice \
+  --password 1234
 
-🔑 login — авторизация пользователя
+🔑 login — вход в систему
 
-Сохраняет сессию текущего пользователя.
+Авторизует пользователя и сохраняет сессию (data/session.json).
 
-Аргументы:
+Аргументы (обязательные):
 
 --username <str>
 
@@ -70,7 +76,9 @@ register --username alice --password 1234
 
 Пример:
 
-login --username alice --password 1234
+python -m valutatrade_hub.cli.interface login \
+  --username alice \
+  --password 1234
 
 🚪 logout — выход из системы
 
@@ -80,39 +88,42 @@ login --username alice --password 1234
 
 Пример:
 
-logout
+python -m valutatrade_hub.cli.interface logout
 
-💼 show-portfolio — просмотр портфеля
+💼 show-portfolio — просмотр портфеля пользователя
 
-Показывает все кошельки пользователя и их стоимость в базовой валюте.
+Показывает все кошельки и их стоимость в базовой валюте.
 
-Аргументы:
+Аргументы (опционально):
 
 --base <str> — базовая валюта (по умолчанию USD)
 
 Пример:
 
-show-portfolio --base USD
+python -m valutatrade_hub.cli.interface show-portfolio
+python -m valutatrade_hub.cli.interface show-portfolio --base USD
 
 💰 buy — покупка валюты
 
-Покупка указанной валюты по текущему курсу из кеша.
+Покупка указанной валюты по текущему курсу из локального кеша.
 
-Аргументы:
+Аргументы (обязательные):
 
---currency <str> — код валюты (например, BTC)
+--currency <str> — код валюты (например BTC)
 
 --amount <float> — количество для покупки
 
 Пример:
 
-buy --currency BTC --amount 0.01
+python -m valutatrade_hub.cli.interface buy \
+  --currency BTC \
+  --amount 0.01
 
 💸 sell — продажа валюты
 
 Продажа валюты из кошелька с расчётом выручки в USD.
 
-Аргументы:
+Аргументы (обязательные):
 
 --currency <str> — код валюты
 
@@ -120,13 +131,15 @@ buy --currency BTC --amount 0.01
 
 Пример:
 
-sell --currency BTC --amount 0.005
+python -m valutatrade_hub.cli.interface sell \
+  --currency BTC \
+  --amount 0.005
 
 📈 get-rate — получить курс между двумя валютами
 
 Возвращает актуальный курс из локального кеша с учётом TTL.
 
-Аргументы:
+Аргументы (обязательные):
 
 --from <str> — исходная валюта
 
@@ -134,25 +147,32 @@ sell --currency BTC --amount 0.005
 
 Пример:
 
-get-rate --from BTC --to USD
+python -m valutatrade_hub.cli.interface get-rate \
+  --from BTC \
+  --to USD
+
+
+Вывод (пример):
+
+{'rate': 78519, 'updated_at': '2026-02-02T23:29:05.226661Z'}
 
 📊 show-rates — показать курсы валют из кеша
 
-Отображает список доступных курсов с возможностью фильтрации.
+Отображает курсы валют, сохранённые в локальном кеше (rates.json), с возможностью фильтрации.
 
-Аргументы (опционально):
+Аргументы (все опциональные):
 
 --currency <str> — показать курсы только для указанной валюты
 
 --top <int> — показать N самых дорогих валют
 
---base <str> — фильтр по базовой валюте (например, USD, EUR)
+--base <str> — показать курсы относительно базовой валюты
 
 Примеры:
 
-show-rates
-show-rates --currency BTC
-show-rates --top 3
+python -m valutatrade_hub.cli.interface show-rates
+python -m valutatrade_hub.cli.interface show-rates --currency BTC
+python -m valutatrade_hub.cli.interface show-rates --top 3
 
 🔄 update-rates — обновить курсы валют
 
@@ -160,9 +180,21 @@ show-rates --top 3
 
 Аргументы (опционально):
 
---source <str> — источник курсов (coingecko, exchangerate)
+--source <str> — источник курсов
+Возможные значения: coingecko, exchangerate
+(по умолчанию используются оба)
 
-Пример:
+Примеры:
 
-update-rates
-update-rates --source coingecko
+python -m valutatrade_hub.cli.interface update-rates
+python -m valutatrade_hub.cli.interface update-rates --source coingecko
+
+⚠️ Обработка ошибок (поддерживается)
+
+неизвестная валюта
+
+отсутствие активной сессии
+
+недостаточно средств
+
+пустой или устаревший кеш курсов
