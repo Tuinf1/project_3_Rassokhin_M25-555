@@ -30,6 +30,9 @@ finalproject_<фамилия>_<группа>/
 
 https://asciinema.org/a/TqUXXlOUAMgK5dl9
 
+Запись демонстрации get-rate и show-rates:
+
+[show-rates](https://asciinema.org/a/IfaqZuHUKSCF0wSb)
 
 
 python -m valutatrade_hub.cli.interface register --username alice --password 1234
@@ -47,6 +50,9 @@ python -m valutatrade_hub.cli.interface get-rate --from USD --to BTC
 
 test api udates-rates:
 python -m valutatrade_hub.cli.interface update-rates
+
+
+
 
 
 📋 Список CLI-команд valutatrade_hub
